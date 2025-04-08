@@ -62,6 +62,11 @@ if (-not (Test-Path $binDir)) {
 Copy-Item -Path $binaryPath -Destination $binDir -Force
 Write-ColorOutput $Blue "📋 Instalando binario en $binDir..."
 
+# Renombrar el binario a treew.exe
+$finalBinaryPath = Join-Path $binDir "treew.exe"
+Rename-Item -Path (Join-Path $binDir $binaryName) -NewName "treew.exe" -Force
+Write-ColorOutput $Blue "📝 Renombrando binario a treew.exe..."
+
 # Crear archivo de configuración básico
 $configDir = "$env:USERPROFILE\.config"
 if (-not (Test-Path $configDir)) {

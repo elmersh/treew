@@ -30,11 +30,15 @@ Una herramienta de línea de comandos para visualizar árboles de directorios co
         Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
         ```
      3. Navega al directorio donde extrajiste los archivos
-     4. Ejecuta el script de instalación:
+     4. Desbloquea el archivo descargado (necesario para archivos descargados de internet):
+        ```powershell
+        Unblock-File -Path .\install.ps1
+        ```
+     5. Ejecuta el script de instalación:
         ```powershell
         .\install.ps1
         ```
-     5. Reinicia tu terminal para que los cambios surtan efecto
+     6. Reinicia tu terminal para que los cambios surtan efecto
 
 El script de instalación:
 - Instala el binario en `/usr/local/bin` (o `~/.local/bin` si no tienes permisos)
