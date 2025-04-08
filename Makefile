@@ -79,6 +79,9 @@ release: build-all
 		if [ -f "LICENSE" ]; then \
 			cp LICENSE $(BUILD_DIR)/release/treew-$(VERSION)-$$os-$$arch/; \
 		fi; \
+		if [ -f "CHANGELOG.md" ]; then \
+			cp CHANGELOG.md $(BUILD_DIR)/release/treew-$(VERSION)-$$os-$$arch/; \
+		fi; \
 		if [ "$$os" = "windows" ]; then \
 			cp scripts/install.ps1 scripts/uninstall.ps1 $(BUILD_DIR)/release/treew-$(VERSION)-$$os-$$arch/; \
 		else \

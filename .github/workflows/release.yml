@@ -63,6 +63,10 @@ jobs:
                 cp LICENSE build/release/treew-${{ steps.get_version.outputs.VERSION }}-$os-$arch/
               fi
               
+              if [ -f "CHANGELOG.md" ]; then
+                cp CHANGELOG.md build/release/treew-${{ steps.get_version.outputs.VERSION }}-$os-$arch/
+              fi
+              
               cd build/release
               tar -czf treew-${{ steps.get_version.outputs.VERSION }}-$os-$arch.tar.gz treew-${{ steps.get_version.outputs.VERSION }}-$os-$arch
               cd ../..
