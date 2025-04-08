@@ -2,6 +2,8 @@
 
 Una herramienta de línea de comandos para visualizar árboles de directorios con íconos y opciones de formato. Treew mejora la visualización tradicional con íconos por tipo de archivo, información de tamaño y varias opciones de formato para hacer la exploración de directorios más intuitiva y visualmente atractiva.
 
+![treew](./preview.png)
+
 ## ✨ Características
 
 - 📁 Muestra la estructura de directorios con íconos intuitivos
