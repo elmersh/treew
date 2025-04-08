@@ -18,8 +18,9 @@ function Write-ColorOutput($ForegroundColor) {
 
 Write-ColorOutput $Blue "🌲 Instalando Treew..."
 
-# Obtener la ruta del script actual
+# Obtener la ruta del script actual y la raíz del proyecto
 $scriptPath = Split-Path -Parent $MyInvocation.MyCommand.Path
+$projectRoot = Split-Path -Parent $scriptPath
 
 # Detectar arquitectura
 $arch = "amd64"  # valor por defecto
@@ -33,12 +34,12 @@ if ($processorArchitecture -eq "ARM64" -or $processorArchitectureW6432 -eq "ARM6
 }
 
 $binaryName = "treew-windows-$arch.exe"
-$binaryPath = Join-Path $scriptPath $binaryName
+$binaryPath = Join-Path $projectRoot "build\$binaryName"
 
 # Verificar si el binario existe
 if (-not (Test-Path $binaryPath)) {
-    Write-ColorOutput $Red "❌ Error: No se encontró el archivo $binaryName en el directorio actual."
-    Write-ColorOutput $Red "Por favor, asegúrate de haber descargado la versión correcta para tu sistema."
+    Write-ColorOutput $Red "❌ Error: No se encontró el archivo $binaryName en el directorio build."
+    Write-ColorOutput $Red "Por favor, asegúrate de haber compilado el proyecto con 'make build'."
     Write-ColorOutput $Red "Arquitectura detectada: $arch"
     exit 1
 }

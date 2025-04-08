@@ -5,6 +5,7 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"regexp"
 	"sort"
 	"strings"
 
@@ -118,6 +119,11 @@ func (w *Walker) walkDir(path, indent string, depth int) error {
 			}
 		}
 
+		// Excluir el archivo de salida si se está usando --output-file
+		if w.options.OutputFile != "" && name == filepath.Base(w.options.OutputFile) {
+			continue
+		}
+
 		filteredEntries = append(filteredEntries, entry)
 	}
 
@@ -177,12 +183,23 @@ func (w *Walker) walkDir(path, indent string, depth int) error {
 
 // printLine imprime una línea en la salida
 func (w *Walker) printLine(line string) {
+	// Imprimir en consola con colores
 	fmt.Println(line)
 	w.output = append(w.output, line)
 
+	// Si hay un archivo de salida, escribir sin códigos de color
 	if w.file != nil {
-		fmt.Fprintln(w.file, line)
+		// Eliminar códigos de color ANSI
+		plainLine := removeANSICodes(line)
+		fmt.Fprintln(w.file, plainLine)
 	}
+}
+
+// removeANSICodes elimina los códigos de color ANSI de una cadena
+func removeANSICodes(s string) string {
+	// Expresión regular para encontrar códigos ANSI
+	ansiRegex := regexp.MustCompile(`\x1b\[[0-9;]*[a-zA-Z]`)
+	return ansiRegex.ReplaceAllString(s, "")
 }
 
 // GetOutput devuelve todas las líneas de salida

@@ -5,6 +5,14 @@ Todos los cambios notables en este proyecto serán documentados en este archivo.
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/),
 y este proyecto adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] - 2024-04-09
+
+### Cambiado
+- Simplificadas las opciones de comando para hacerlas más cortas y fáciles de usar:
+  - `--exclude-folders` → `-f, --folders`
+  - `--exclude-extensions` → `-e, --extensions`
+  - `--show-last-modified` → `-m, --modified`
+
 ## [1.0.0] - 2024-04-08
 
 ### Añadido

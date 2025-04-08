@@ -76,27 +76,29 @@ treew --show-file-size
 treew -s
 
 # Mostrar con fechas de última modificación
-treew --show-last-modified
+treew --modified
+# o con el alias corto
+treew -m
 ```
 
 ### Ejemplos avanzados
 
 ```bash
 # Excluir múltiples carpetas y mostrar archivos ocultos
-treew --exclude-folders node_modules,bin,.git --show-hidden
+treew -f node_modules,bin,.git --show-hidden
 
 # Limitar profundidad y guardar en archivo
 treew --max-depth 3 --output-file tree.txt
 
 # Combinar múltiples opciones
-treew --show-file-size --show-last-modified --exclude-folders node_modules,bin --exclude-extensions .exe,.dll --max-depth 2
+treew --show-file-size -m -f node_modules,bin -e .exe,.dll --max-depth 2
 ```
 
 ### Guardar configuración personalizada
 
 ```bash
 # Guardar la configuración actual como predeterminada
-treew --exclude-folders node_modules,bin,.git --show-file-size --save-config
+treew -f node_modules,bin,.git --show-file-size --save-config
 ```
 
 ## ⚙️ Configuración
@@ -128,11 +130,11 @@ use_nerd_fonts: true
 
 | Parámetro               | Descripción                         | Valor predeterminado                            |
 |-------------------------|-------------------------------------|--------------------------------------------------|
-| `--exclude-folders`     | Lista de carpetas a excluir         | `node_modules,bin,obj,.git,packages`            |
-| `--exclude-extensions`  | Lista de extensiones a excluir      | `[]` (ninguna)                                  |
+| `-f, --folders`         | Lista de carpetas a excluir         | `node_modules,bin,obj,.git,packages`            |
+| `-e, --extensions`      | Lista de extensiones a excluir      | `[]` (ninguna)                                  |
 | `--show-hidden,-a`      | Incluir archivos y carpetas ocultos | `false`                                         |
 | `--show-file-size,-s`   | Mostrar tamaños de archivos         | `false`                                         |
-| `--show-last-modified`  | Mostrar fechas de modificación      | `false`                                         |
+| `-m, --modified`        | Mostrar fechas de modificación      | `false`                                         |
 | `--max-depth,-d`        | Profundidad máxima a mostrar        | `-1` (ilimitado)                               |
 | `--output-file`         | Guardar salida en archivo           | `""` (ninguno)                                  |
 | `--save-config`         | Guardar configuración actual        | `false`                                         |

@@ -13,6 +13,7 @@ echo -e "${BLUE}🌲 Instalando Treew...${NC}"
 
 # Obtener la ruta del script actual
 SCRIPT_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PROJECT_ROOT="$( cd "$SCRIPT_PATH/.." && pwd )"
 
 # Detectar sistema operativo y arquitectura
 OS=$(uname -s | tr '[:upper:]' '[:lower:]')
@@ -34,12 +35,12 @@ esac
 
 # Construir nombre del binario
 BINARY_NAME="treew-${OS}-${ARCH}"
-BINARY_PATH="$SCRIPT_PATH/$BINARY_NAME"
+BINARY_PATH="$PROJECT_ROOT/build/$BINARY_NAME"
 
 # Verificar si el binario existe
 if [ ! -f "$BINARY_PATH" ]; then
-    echo -e "${RED}❌ Error: No se encontró el archivo $BINARY_NAME en el directorio actual.${NC}"
-    echo -e "${RED}Por favor, asegúrate de haber descargado la versión correcta para tu sistema.${NC}"
+    echo -e "${RED}❌ Error: No se encontró el archivo $BINARY_NAME en el directorio build.${NC}"
+    echo -e "${RED}Por favor, asegúrate de haber compilado el proyecto con 'make build'.${NC}"
     echo -e "${YELLOW}Sistema detectado: $OS $ARCH${NC}"
     exit 1
 fi

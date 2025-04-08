@@ -14,6 +14,7 @@ PLATFORMS=linux/amd64 darwin/amd64 windows/amd64
 GREEN=\033[0;32m
 BLUE=\033[0;34m
 NC=\033[0m # No Color
+RED=\033[0;31m
 
 .PHONY: all clean build-all build test install uninstall
 
@@ -44,7 +45,21 @@ build-all:
 # Compilar para la plataforma actual
 build:
 	@echo "$(BLUE)📦 Compilando para la plataforma actual...$(NC)"
-	@go build $(LDFLAGS) -o $(BINARY_NAME) $(GO_FILES)
+	@mkdir -p $(BUILD_DIR)
+	@OS=$$(uname -s | tr '[:upper:]' '[:lower:]'); \
+	ARCH=$$(uname -m); \
+	case $$ARCH in \
+		x86_64) ARCH="amd64" ;; \
+		aarch64|arm64) ARCH="arm64" ;; \
+		*) echo "$(RED)❌ Error: Arquitectura no soportada: $$ARCH$(NC)"; exit 1 ;; \
+	esac; \
+	if [ "$$OS" = "darwin" ]; then \
+		GOOS=darwin GOARCH=$$ARCH go build $(LDFLAGS) -o $(BUILD_DIR)/$(BINARY_NAME)-darwin-$$ARCH $(GO_FILES); \
+	elif [ "$$OS" = "linux" ]; then \
+		GOOS=linux GOARCH=$$ARCH go build $(LDFLAGS) -o $(BUILD_DIR)/$(BINARY_NAME)-linux-$$ARCH $(GO_FILES); \
+	else \
+		echo "$(RED)❌ Error: Sistema operativo no soportado: $$OS$(NC)"; exit 1; \
+	fi
 	@echo "$(GREEN)✅ Compilación completada$(NC)"
 
 # Ejecutar pruebas

@@ -53,10 +53,10 @@ y fechas de modificación, y guardar la salida en un archivo.`,
 			emoji.InitFromConfig(cfg)
 
 			// Usar valores de línea de comandos si se proporcionaron
-			if cmd.Flags().Changed("exclude-folders") {
+			if cmd.Flags().Changed("folders") {
 				cfg.ExcludeFolders = excludeFolders
 			}
-			if cmd.Flags().Changed("exclude-extensions") {
+			if cmd.Flags().Changed("extensions") {
 				cfg.ExcludeExtensions = excludeExtensions
 			}
 			if cmd.Flags().Changed("show-hidden") {
@@ -65,7 +65,7 @@ y fechas de modificación, y guardar la salida en un archivo.`,
 			if cmd.Flags().Changed("show-file-size") {
 				cfg.ShowFileSize = showFileSize
 			}
-			if cmd.Flags().Changed("show-last-modified") {
+			if cmd.Flags().Changed("modified") {
 				cfg.ShowLastModified = showLastModified
 			}
 			if cmd.Flags().Changed("max-depth") {
@@ -106,11 +106,11 @@ y fechas de modificación, y guardar la salida en un archivo.`,
 
 	// Definir banderas
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "archivo de configuración (predeterminado: $HOME/.config/treew.yaml)")
-	rootCmd.Flags().StringSliceVar(&excludeFolders, "exclude-folders", defaultCfg.ExcludeFolders, "carpetas a excluir")
-	rootCmd.Flags().StringSliceVar(&excludeExtensions, "exclude-extensions", defaultCfg.ExcludeExtensions, "extensiones a excluir")
+	rootCmd.Flags().StringSliceVarP(&excludeFolders, "folders", "f", defaultCfg.ExcludeFolders, "carpetas a excluir")
+	rootCmd.Flags().StringSliceVarP(&excludeExtensions, "extensions", "e", defaultCfg.ExcludeExtensions, "extensiones a excluir")
 	rootCmd.Flags().BoolVarP(&showHidden, "show-hidden", "a", defaultCfg.ShowHidden, "mostrar archivos ocultos")
 	rootCmd.Flags().BoolVarP(&showFileSize, "show-file-size", "s", defaultCfg.ShowFileSize, "mostrar tamaño de archivos")
-	rootCmd.Flags().BoolVar(&showLastModified, "show-last-modified", defaultCfg.ShowLastModified, "mostrar fecha de modificación")
+	rootCmd.Flags().BoolVarP(&showLastModified, "modified", "m", defaultCfg.ShowLastModified, "mostrar fecha de modificación")
 	rootCmd.Flags().IntVarP(&maxDepth, "max-depth", "d", defaultCfg.MaxDepth, "profundidad máxima (-1 para ilimitado)")
 	rootCmd.Flags().StringVar(&outputFile, "output-file", "", "guardar salida en archivo")
 	rootCmd.Flags().BoolVar(&saveConfig, "save-config", false, "guardar configuración actual como predeterminada")
