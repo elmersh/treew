@@ -5,9 +5,10 @@ BINARY_NAME=treew
 VERSION=$(shell git describe --tags --always --dirty)
 BUILD_DIR=build
 LDFLAGS=-ldflags "-X main.Version=$(VERSION)"
+GO_FILES=./cmd/treew/main.go
 
-# Plataformas para compilación cruzada
-PLATFORMS=linux/amd64 linux/arm64 darwin/amd64 darwin/arm64 windows/amd64 windows/arm64
+# Plataformas para compilación cruzada (simplificado)
+PLATFORMS=linux/amd64 darwin/amd64 windows/amd64
 
 # Colores para la salida
 GREEN=\033[0;32m
@@ -33,9 +34,9 @@ build-all:
 		arch=$${platform#*/}; \
 		echo "$(BLUE)📦 Compilando para $$os/$$arch...$(NC)"; \
 		if [ "$$os" = "windows" ]; then \
-			GOOS=$$os GOARCH=$$arch go build $(LDFLAGS) -o $(BUILD_DIR)/$(BINARY_NAME)-$$os-$$arch.exe; \
+			GOOS=$$os GOARCH=$$arch go build $(LDFLAGS) -o $(BUILD_DIR)/$(BINARY_NAME)-$$os-$$arch.exe $(GO_FILES); \
 		else \
-			GOOS=$$os GOARCH=$$arch go build $(LDFLAGS) -o $(BUILD_DIR)/$(BINARY_NAME)-$$os-$$arch; \
+			GOOS=$$os GOARCH=$$arch go build $(LDFLAGS) -o $(BUILD_DIR)/$(BINARY_NAME)-$$os-$$arch $(GO_FILES); \
 		fi; \
 	done
 	@echo "$(GREEN)✅ Compilación completada$(NC)"
@@ -43,7 +44,7 @@ build-all:
 # Compilar para la plataforma actual
 build:
 	@echo "$(BLUE)📦 Compilando para la plataforma actual...$(NC)"
-	@go build $(LDFLAGS) -o $(BINARY_NAME)
+	@go build $(LDFLAGS) -o $(BINARY_NAME) $(GO_FILES)
 	@echo "$(GREEN)✅ Compilación completada$(NC)"
 
 # Ejecutar pruebas
@@ -55,7 +56,7 @@ test:
 # Instalar en el sistema
 install:
 	@echo "$(BLUE)📋 Instalando Treew...$(NC)"
-	@./install.sh
+	@./scripts/install.sh
 	@echo "$(GREEN)✅ Instalación completada$(NC)"
 
 # Desinstalar del sistema
@@ -74,9 +75,14 @@ release: build-all
 		echo "$(BLUE)📝 Creando release para $$os/$$arch...$(NC)"; \
 		mkdir -p $(BUILD_DIR)/release/treew-$(VERSION)-$$os-$$arch; \
 		cp $(BUILD_DIR)/$(BINARY_NAME)-$$os-$$arch* $(BUILD_DIR)/release/treew-$(VERSION)-$$os-$$arch/; \
-		cp README.md LICENSE $(BUILD_DIR)/release/treew-$(VERSION)-$$os-$$arch/; \
-		if [ "$$os" != "windows" ]; then \
-			cp install.sh $(BUILD_DIR)/release/treew-$(VERSION)-$$os-$$arch/; \
+		cp README.md $(BUILD_DIR)/release/treew-$(VERSION)-$$os-$$arch/; \
+		if [ -f "LICENSE" ]; then \
+			cp LICENSE $(BUILD_DIR)/release/treew-$(VERSION)-$$os-$$arch/; \
+		fi; \
+		if [ "$$os" = "windows" ]; then \
+			cp scripts/install.ps1 scripts/uninstall.ps1 $(BUILD_DIR)/release/treew-$(VERSION)-$$os-$$arch/; \
+		else \
+			cp scripts/install.sh scripts/uninstall.sh $(BUILD_DIR)/release/treew-$(VERSION)-$$os-$$arch/; \
 		fi; \
 		cd $(BUILD_DIR)/release && tar -czf treew-$(VERSION)-$$os-$$arch.tar.gz treew-$(VERSION)-$$os-$$arch; \
 		cd ../..; \

@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/elmersh/treew/pkg/emoji"
+	"github.com/elmersh/treew/internal/emoji"
 	"github.com/fatih/color"
 )
 

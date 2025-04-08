@@ -23,7 +23,24 @@ Una herramienta de línea de comandos para visualizar árboles de directorios co
 3. Extrae el archivo descargado
 4. Ejecuta el script de instalación correspondiente:
    - Para Linux/macOS: `./install.sh`
-   - Para Windows: Ejecuta `install.ps1` como administrador
+   - Para Windows: 
+     1. Abre PowerShell como administrador
+     2. Ejecuta el siguiente comando para permitir la ejecución de scripts:
+        ```powershell
+        Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+        ```
+     3. Navega al directorio donde extrajiste los archivos
+     4. Ejecuta el script de instalación:
+        ```powershell
+        .\install.ps1
+        ```
+     5. Reinicia tu terminal para que los cambios surtan efecto
+
+El script de instalación:
+- Instala el binario en `/usr/local/bin` (o `~/.local/bin` si no tienes permisos)
+- Crea un archivo de configuración predeterminado en `~/.config/treew.yaml`
+- Añade automáticamente el directorio de instalación a tu PATH si es necesario
+- Configura los permisos de ejecución correctamente
 
 ### Desde el código fuente
 
@@ -98,6 +115,7 @@ show_hidden: false
 show_file_size: true
 show_last_modified: false
 max_depth: -1
+use_nerd_fonts: true
 ```
 
 ## 🎛️ Parámetros
@@ -148,25 +166,21 @@ GOOS=windows GOARCH=amd64 go build -o bin/treew-windows.exe
 
 Para desinstalar Treew:
 
-- En Linux/macOS: Ejecuta `./uninstall.sh`
-- En Windows: Ejecuta `uninstall.ps1` como administrador
+1. Elimina el binario:
+   ```bash
+   # En Linux/macOS
+   rm /usr/local/bin/treew
+   # O si fue instalado en ~/.local/bin
+   rm ~/.local/bin/treew
+   
+   # En Windows (PowerShell)
+   Remove-Item "$env:LOCALAPPDATA\Programs\treew\treew.exe"
+   ```
 
-## 🤝 Contribuyendo
+2. Elimina el archivo de configuración (opcional):
+   ```bash
+   rm ~/.config/treew.yaml
+   ```
 
-¡Las contribuciones son bienvenidas! Siéntete libre de enviar un Pull Request. Para cambios importantes, por favor abre primero un issue para discutir lo que te gustaría cambiar.
-
-1. Haz fork del proyecto
-2. Crea tu rama de función (`git checkout -b feature/AmazingFeature`)
-3. Haz commit de tus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Haz push a la rama (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
-
-## 📝 Licencia
-
-Este proyecto está licenciado bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para más detalles.
-
-## 🙏 Agradecimientos
-
-- Inspirado en el comando `tree` de Unix
-- Íconos basados en representaciones comunes de tipos de archivos
-- Gracias a todos los contribuyentes y usuarios de este módulo
+3. Elimina la entrada del PATH si fue añadida automáticamente (opcional):
+   - Edita tu archivo `~/.bashrc` o `~/.zshrc` y elimina la línea que contiene `export PATH="...treew..."`

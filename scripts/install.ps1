@@ -4,6 +4,7 @@
 # Colores para la salida
 $Green = [System.ConsoleColor]::Green
 $Blue = [System.ConsoleColor]::Blue
+$Red = [System.ConsoleColor]::Red
 
 # Función para escribir mensajes con color
 function Write-ColorOutput($ForegroundColor) {
@@ -19,12 +20,26 @@ Write-ColorOutput $Blue "🌲 Instalando Treew..."
 
 # Obtener la ruta del script actual
 $scriptPath = Split-Path -Parent $MyInvocation.MyCommand.Path
-$binaryPath = Join-Path $scriptPath "treew.exe"
+
+# Detectar arquitectura
+$arch = "amd64"  # valor por defecto
+$processorArchitecture = [System.Environment]::GetEnvironmentVariable("PROCESSOR_ARCHITECTURE")
+$processorArchitectureW6432 = [System.Environment]::GetEnvironmentVariable("PROCESSOR_ARCHITEW6432")
+
+if ($processorArchitecture -eq "ARM64" -or $processorArchitectureW6432 -eq "ARM64") {
+    $arch = "arm64"
+} elseif (-not [Environment]::Is64BitOperatingSystem) {
+    $arch = "386"
+}
+
+$binaryName = "treew-windows-$arch.exe"
+$binaryPath = Join-Path $scriptPath $binaryName
 
 # Verificar si el binario existe
 if (-not (Test-Path $binaryPath)) {
-    Write-ColorOutput $Red "❌ Error: No se encontró el archivo treew.exe en el directorio actual."
-    Write-ColorOutput $Red "Por favor, asegúrate de que el archivo treew.exe esté en el mismo directorio que este script."
+    Write-ColorOutput $Red "❌ Error: No se encontró el archivo $binaryName en el directorio actual."
+    Write-ColorOutput $Red "Por favor, asegúrate de haber descargado la versión correcta para tu sistema."
+    Write-ColorOutput $Red "Arquitectura detectada: $arch"
     exit 1
 }
 
@@ -69,6 +84,7 @@ show_hidden: false
 show_file_size: false
 show_last_modified: false
 max_depth: -1
+use_nerd_fonts: false
 "@ | Out-File -FilePath $configFile -Encoding utf8
 }
 
