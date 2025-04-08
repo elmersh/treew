@@ -28,12 +28,12 @@ jobs:
         run: |
           mkdir -p build/release
           for os in linux darwin windows; do
-            for arch in amd64 arm64; do
+            for arch in amd64; do
               echo "Building for $os/$arch..."
               if [ "$os" = "windows" ]; then
-                GOOS=$os GOARCH=$arch go build -ldflags="-X main.Version=${{ steps.get_version.outputs.VERSION }}" -o build/treew-$os-$arch.exe
+                GOOS=$os GOARCH=$arch go build -ldflags="-X main.Version=${{ steps.get_version.outputs.VERSION }}" -o build/treew-$os-$arch.exe ./cmd/treew/main.go
               else
-                GOOS=$os GOARCH=$arch go build -ldflags="-X main.Version=${{ steps.get_version.outputs.VERSION }}" -o build/treew-$os-$arch
+                GOOS=$os GOARCH=$arch go build -ldflags="-X main.Version=${{ steps.get_version.outputs.VERSION }}" -o build/treew-$os-$arch ./cmd/treew/main.go
               fi
             done
           done
@@ -41,19 +41,23 @@ jobs:
       - name: Create release packages
         run: |
           for os in linux darwin windows; do
-            for arch in amd64 arm64; do
+            for arch in amd64; do
               echo "Creating release package for $os/$arch..."
               mkdir -p build/release/treew-${{ steps.get_version.outputs.VERSION }}-$os-$arch
               
               if [ "$os" = "windows" ]; then
                 cp build/treew-$os-$arch.exe build/release/treew-${{ steps.get_version.outputs.VERSION }}-$os-$arch/
-                cp install.ps1 uninstall.ps1 build/release/treew-${{ steps.get_version.outputs.VERSION }}-$os-$arch/
+                cp scripts/install.ps1 scripts/uninstall.ps1 build/release/treew-${{ steps.get_version.outputs.VERSION }}-$os-$arch/
               else
                 cp build/treew-$os-$arch build/release/treew-${{ steps.get_version.outputs.VERSION }}-$os-$arch/
-                cp install.sh uninstall.sh build/release/treew-${{ steps.get_version.outputs.VERSION }}-$os-$arch/
+                cp scripts/install.sh scripts/uninstall.sh build/release/treew-${{ steps.get_version.outputs.VERSION }}-$os-$arch/
               fi
               
-              cp README.md LICENSE build/release/treew-${{ steps.get_version.outputs.VERSION }}-$os-$arch/
+              cp README.md build/release/treew-${{ steps.get_version.outputs.VERSION }}-$os-$arch/
+              
+              if [ -f "LICENSE" ]; then
+                cp LICENSE build/release/treew-${{ steps.get_version.outputs.VERSION }}-$os-$arch/
+              fi
               
               cd build/release
               tar -czf treew-${{ steps.get_version.outputs.VERSION }}-$os-$arch.tar.gz treew-${{ steps.get_version.outputs.VERSION }}-$os-$arch
@@ -67,11 +71,8 @@ jobs:
         with:
           files: |
             build/release/treew-${{ steps.get_version.outputs.VERSION }}-linux-amd64.tar.gz
-            build/release/treew-${{ steps.get_version.outputs.VERSION }}-linux-arm64.tar.gz
             build/release/treew-${{ steps.get_version.outputs.VERSION }}-darwin-amd64.tar.gz
-            build/release/treew-${{ steps.get_version.outputs.VERSION }}-darwin-arm64.tar.gz
             build/release/treew-${{ steps.get_version.outputs.VERSION }}-windows-amd64.tar.gz
-            build/release/treew-${{ steps.get_version.outputs.VERSION }}-windows-arm64.tar.gz
           generate_release_notes: true
           draft: false
           prerelease: false
