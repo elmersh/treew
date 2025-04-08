@@ -54,7 +54,20 @@ y fechas de modificación, y guardar la salida en un archivo.`,
 
 			// Usar valores de línea de comandos si se proporcionaron
 			if cmd.Flags().Changed("folders") {
-				cfg.ExcludeFolders = excludeFolders
+				// Combinar las carpetas predeterminadas con las nuevas
+				newExcludeFolders := make(map[string]bool)
+				for _, folder := range cfg.ExcludeFolders {
+					newExcludeFolders[folder] = true
+				}
+				for _, folder := range excludeFolders {
+					newExcludeFolders[folder] = true
+				}
+
+				// Convertir el mapa de vuelta a slice
+				cfg.ExcludeFolders = make([]string, 0, len(newExcludeFolders))
+				for folder := range newExcludeFolders {
+					cfg.ExcludeFolders = append(cfg.ExcludeFolders, folder)
+				}
 			}
 			if cmd.Flags().Changed("extensions") {
 				cfg.ExcludeExtensions = excludeExtensions
